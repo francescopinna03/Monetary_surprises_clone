@@ -15,8 +15,8 @@ fi
 
 if [ -z "${matlab_bin:-}" ]; then
     echo "MATLAB not found. Add matlab to PATH or install it in /Applications." >&2
-    echo "Usage: ./run_pipeline.sh [/path/to/Econometrics_data]" >&2
+    echo "Usage: ./Run_pipeline.sh [/path/to/Econometrics_data]" >&2
     exit 1
 fi
 
-exec "$matlab_bin" -batch "cd('$repo_dir'); run_pipeline"
+exec "$matlab_bin" -batch "cd('$repo_dir'); Run_pipeline"

@@ -28,7 +28,7 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 panelFile = fullfile(analysisDir, 'pr_state_dependent_panel.csv');
@@ -42,7 +42,7 @@ if ~isempty(missingVars)
     error('Mancano colonne nel pannello state-dependent: %s', strjoin(missingVars, ', '));
 end
 
-T.event_date = parse_date_flex(T.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = string(T.root_code);
 
 numVars = ["PR_abs_jump", "asinh_PR_rv", "asinh_PR_rsv_neg", "shock_target_10bp", "regime_hike", "state_pre_rv_z", "state_pre_rsvneg_z", "ma3_target_10bp_z"];

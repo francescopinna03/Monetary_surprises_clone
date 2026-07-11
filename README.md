@@ -20,9 +20,9 @@ Third, the econometric layer estimates the response of intraday volatility to mo
 
 The code is written in MATLAB and uses standard table, datetime and matrix operations. 
 
-All scripts resolve the location of the data package through the shared helper `get_project_root.m`, so no source file needs to be edited before replication. The helper looks for the data folder in the following order: the environment variable `ECONOMETRICS_DATA_ROOT` (if set), a folder named `Econometrics_data` next to the MATLAB scripts, and finally a folder named `Econometrics_data` in the current working directory. If none of these resolves to a folder containing the expected `Raw/` subfolder, the scripts stop with an explicit error message.
+All scripts resolve the location of the data package through the shared helper `Get_project_root.m`, so no source file needs to be edited before replication. The helper looks for the data folder in the following order: the environment variable `ECONOMETRICS_DATA_ROOT` (if set), a folder named `Econometrics_data` next to the MATLAB scripts, and finally a folder named `Econometrics_data` in the current working directory. If none of these resolves to a folder containing the expected `Raw/` subfolder, the scripts stop with an explicit error message.
 
-Common utilities are shared function files in the repository root: `parse_date_flex.m`, `parse_datetime_flex.m`, `string_to_bool.m`, `locate_first_existing.m` and `find_col.m`. They are found automatically when MATLAB runs from the repository folder or when the folder is on the MATLAB path.
+Common utilities are shared function files in the repository root: `Parse_date_flexible.m`, `Parse_datetime_flexible.m`, `String_to_boolean.m`, `Locate_first_existing.m` and `Find_column.m`. They are found automatically when MATLAB runs from the repository folder or when the folder is on the MATLAB path.
 
 The stochastic steps are seeded for exact reproducibility. `Hierarchical_shrinkage.m` seeds the cross-validation fold assignment and `Quasi_markov_residual_predictability.m` seeds the bootstrap draws, both through a `cfg.seed` field set at the top of the script. Changing the seed changes the bootstrap p-values and the selected penalty within sampling noise; keeping the default reproduces the reported numbers bit for bit.
 
@@ -34,20 +34,20 @@ The raw input files are provided separately together with the paper draft, as a 
 
 ## Repository structure
 
-The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `run_pipeline.m` executes all seventeen steps in order and writes a full console log to `pipeline_run.log`.
+The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `Run_pipeline.m` executes all seventeen steps in order and writes a full console log to `pipeline_run.log`.
 
 A full replication therefore reduces to one command. From MATLAB:
 
 ```matlab
 cd /path/to/this/repository
 setenv('ECONOMETRICS_DATA_ROOT', '/path/to/Econometrics_data')
-run_pipeline
+Run_pipeline
 ```
 
 From the terminal, without opening the MATLAB desktop:
 
 ```bash
-./run_pipeline.sh /path/to/Econometrics_data
+./Run_pipeline.sh /path/to/Econometrics_data
 ```
 
 The shell wrapper uses `matlab` from the PATH or the newest installation found in `/Applications`, exports the data root when passed as an argument, and runs the pipeline headless with `matlab -batch`. The environment variable can be omitted entirely when the `Econometrics_data` folder sits next to the scripts.
@@ -72,7 +72,7 @@ The shell wrapper uses `matlab` from the PATH or the newest installation found i
 | 15 | `PR_bar_panel.m` | Reconstructs the bar-level press-release panel needed for the BNS-style volatility decomposition. |
 | 16 | `BNS_volatility.m` | Computes realized variance, bipower variation and jump variation, then estimates state-dependent models on the continuous and jump components. |
 
-The distinction between `Clean_raw_files.m` and `clean_single_barchart_file.m` is important. The former is the script that should be executed by the user. The latter is a single-file cleaning function. In a full run, the driver calls the helper once for each raw Barchart CSV file. The shared helper `get_project_root.m` must also be available on the MATLAB path or in the same folder as the scripts, which is automatic when the repository is used as the working directory.
+The distinction between `Clean_raw_files.m` and `clean_single_barchart_file.m` is important. The former is the script that should be executed by the user. The latter is a single-file cleaning function. In a full run, the driver calls the helper once for each raw Barchart CSV file. The shared helper `Get_project_root.m` must also be available on the MATLAB path or in the same folder as the scripts, which is automatic when the repository is used as the working directory.
 
 ## Data availability and required inputs
 
@@ -80,7 +80,7 @@ The raw and intermediate input files required to reproduce the empirical workflo
 
 The replication package is expected to contain the files required by the MATLAB pipeline, including all 104 raw Barchart intraday futures CSV files at five-minute frequency, the ECB monetary policy meeting calendar, including event dates, press-release times and press-conference time, EA-MPD monetary surprise data (Altavilla et al. (2019)), OIS changes used to construct target and path surprise measures and the auxiliary input files needed to reproduce the intermediate panels used in the paper
 
-Once the data package has been placed locally, the scripts locate it automatically through `get_project_root.m` as described in the reproducibility notes above. No path needs to be edited in the source files.
+Once the data package has been placed locally, the scripts locate it automatically through `Get_project_root.m` as described in the reproducibility notes above. No path needs to be edited in the source files.
 
 The expected directory structure of the data package is:
 

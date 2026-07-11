@@ -25,7 +25,7 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 diagDir = fullfile(projectRoot, 'Output', 'diagnostics');
 dayQualityFile = fullfile(diagDir, 'contract_day_quality.csv');
@@ -38,7 +38,7 @@ calendarCandidates{4} = fullfile(projectRoot, 'Raw', 'ECB_calendar', 'ecb_calend
 calendarCandidates{5} = fullfile(projectRoot, 'Raw', 'ECB_calendar', 'ecb_meeting_calendar_2013_2026.xlsx');
 calendarCandidates{6} = fullfile(projectRoot, 'Data', 'ecb_meeting_calendar_2013_2026.xlsx');
 
-calendarFile = locate_first_existing(calendarCandidates);
+calendarFile = Locate_first_existing(calendarCandidates);
 
 if strlength(calendarFile) == 0
     error('ECB calendar not found.');
@@ -69,7 +69,7 @@ if ~isempty(missing)
     error('Missing columns in contract_day_quality: %s', strjoin(missing, ', '));
 end
 
-dayQ.trade_date = parse_date_flex(dayQ.trade_date);
+dayQ.trade_date = Parse_date_flexible(dayQ.trade_date);
 dayQ.root_code = string(dayQ.root_code);
 dayQ.expiry_code = string(dayQ.expiry_code);
 dayQ.file_name_clean = string(dayQ.file_name_clean);
@@ -188,17 +188,17 @@ function eventPanel = load_and_build_event_panel(calendarFile)
 
     names = string(T.Properties.VariableNames);
 
-    dateVar = find_col(names, ["event_date", "date", "meeting_date", "govc_date"]);
+    dateVar = Find_column(names, ["event_date", "date", "meeting_date", "govc_date"]);
 
     if strlength(dateVar) == 0
         error('Date column not found in ECB calendar.');
     end
 
-    eventDate = parse_date_flex(T.(dateVar));
+    eventDate = Parse_date_flexible(T.(dateVar));
     eventDate = dateshift(eventDate, 'start', 'day');
 
-    prVar = find_col(names, ["decision_time_local", "pr_time", "press_release_time"]);
-    pcVar = find_col(names, ["press_conf_time_local", "pc_time", "press_conference_time"]);
+    prVar = Find_column(names, ["decision_time_local", "pr_time", "press_release_time"]);
+    pcVar = Find_column(names, ["press_conf_time_local", "pc_time", "press_conference_time"]);
 
     if strlength(prVar) > 0 && strlength(pcVar) > 0
         prDur = parse_hhmm_to_duration(T.(prVar));
@@ -212,8 +212,8 @@ function eventPanel = load_and_build_event_panel(calendarFile)
         pcDur(newMask) = hours(14) + minutes(45);
     end
 
-    regimeVar = find_col(names, ["timing_regime", "time_regime", "regime"]);
-    locationVar = find_col(names, ["location", "city", "venue"]);
+    regimeVar = Find_column(names, ["timing_regime", "time_regime", "regime"]);
+    locationVar = Find_column(names, ["location", "city", "venue"]);
 
     raw = table();
     raw.event_date = eventDate;

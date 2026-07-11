@@ -1,4 +1,4 @@
-function col = find_col(allNames, candidates)
+function col = Find_column(allNames, candidates)
 
     col = "";
     lowerAll = lower(string(allNames));

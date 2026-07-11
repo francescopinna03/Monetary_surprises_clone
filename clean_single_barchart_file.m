@@ -74,7 +74,7 @@ function [cleanTbl, rowLog, fileSummary] = clean_single_barchart_file(fpath, out
         return;
     end
 
-    T.Time = parse_datetime_flex(T.timeStr);
+    T.Time = Parse_datetime_flexible(T.timeStr);
 
     bad_dt = isnat(T.Time);
     missing_core = any(isnan([T.Open T.High T.Low T.Latest T.Volume]), 2);

@@ -23,7 +23,7 @@
 % Output/analysis/pr_fractional_coefficients.csv, Output/analysis/pr_fractional_model_summary.csv
 % and Output/analysis/pr_fractional_diagnostics.csv.
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 panelFile = fullfile(analysisDir, 'pr_baseline_panel.csv');
@@ -37,7 +37,7 @@ if ~isempty(missingVars)
     error('Mancano colonne: %s', strjoin(missingVars, ', '));
 end
 
-T.event_date = parse_date_flex(T.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = string(T.root_code);
 
 numVars = ["PR_neg_share", "shock_target", "ois_1m_raw", "ois_3m_raw", "ois_6m_raw", "ois_1y_raw", "ois_2y_raw", "ois_3y_raw", "ois_4y_raw", "ois_5y_raw", "ois_10y_raw"];

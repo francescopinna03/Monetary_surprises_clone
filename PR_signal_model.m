@@ -29,7 +29,7 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 windowDir = fullfile(projectRoot, 'Output', 'event_windows');
@@ -46,8 +46,8 @@ if ~isempty(missingP)
     error('Mancano colonne in pr_baseline_panel.csv: %s', strjoin(missingP, ', '));
 end
 
-P.event_date = parse_date_flex(P.event_date);
-P.trade_date = parse_date_flex(P.trade_date);
+P.event_date = Parse_date_flexible(P.event_date);
+P.trade_date = Parse_date_flexible(P.trade_date);
 P.root_code = string(P.root_code);
 P.event_id = string(P.event_id);
 P.file_name_clean = string(P.file_name_clean);
@@ -76,14 +76,14 @@ if ~isempty(missingB)
     error('Mancano colonne in event_window_bars.csv: %s', strjoin(missingB, ', '));
 end
 
-B.event_date = parse_date_flex(B.event_date);
-B.trade_date = parse_date_flex(B.trade_date);
+B.event_date = Parse_date_flexible(B.event_date);
+B.trade_date = Parse_date_flexible(B.trade_date);
 B.root_code = string(B.root_code);
 B.event_id = string(B.event_id);
 B.file_name_clean = string(B.file_name_clean);
 B.expiry_code = string(B.expiry_code);
 B.window_name = string(B.window_name);
-B.Time = parse_datetime_flex(B.Time);
+B.Time = Parse_datetime_flexible(B.Time);
 
 numVarsB = ["contract_year", "Latest", "rel_event_minutes"];
 

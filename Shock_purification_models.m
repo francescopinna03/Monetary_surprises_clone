@@ -33,7 +33,7 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 eventFile = fullfile(analysisDir, 'event_state_panel.csv');
@@ -42,8 +42,8 @@ longFile = fullfile(analysisDir, 'pr_state_dependent_panel.csv');
 E = readtable(eventFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 T = readtable(longFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-E.event_date = parse_date_flex(E.event_date);
-T.event_date = parse_date_flex(T.event_date);
+E.event_date = Parse_date_flexible(E.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = string(T.root_code);
 
 numVarsE = ["shock_target_10bp", "regime_hike", "state_pre_rv_z", "state_pre_rsvneg_z"];

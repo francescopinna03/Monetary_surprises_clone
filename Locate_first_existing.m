@@ -1,4 +1,4 @@
-function pathOut = locate_first_existing(candidates)
+function pathOut = Locate_first_existing(candidates)
 
     pathOut = "";
 

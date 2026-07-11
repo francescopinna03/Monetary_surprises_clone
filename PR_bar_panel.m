@@ -26,7 +26,7 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 cleanDir = fullfile(projectRoot, 'Output', 'cleaned');
@@ -36,8 +36,8 @@ minBarsForBNS = 5;
 
 P = readtable(panelFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-P.event_date = parse_date_flex(P.event_date);
-P.pr_datetime_local = parse_datetime_flex(P.pr_datetime_local);
+P.event_date = Parse_date_flexible(P.event_date);
+P.pr_datetime_local = Parse_datetime_flexible(P.pr_datetime_local);
 P.root_code = string(P.root_code);
 P.file_name_clean = string(P.file_name_clean);
 
@@ -196,7 +196,7 @@ function C = read_clean_file(filePath)
 
     T = readtable(filePath, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-    T.Time = parse_datetime_flex(T.Time);
+    T.Time = Parse_datetime_flexible(T.Time);
 
     if ~isnumeric(T.Latest)
         T.Latest = str2double(T.Latest);

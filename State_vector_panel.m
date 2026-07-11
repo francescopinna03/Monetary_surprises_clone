@@ -25,14 +25,14 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 signalFile = fullfile(analysisDir, 'pr_signal_panel.csv');
 
 T = readtable(signalFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-T.event_date = parse_date_flex(T.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = string(T.root_code);
 T.event_id = string(T.event_id);
 

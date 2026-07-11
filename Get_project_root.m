@@ -1,4 +1,4 @@
-function projectRoot = get_project_root()
+function projectRoot = Get_project_root()
 
     projectRoot = getenv('ECONOMETRICS_DATA_ROOT');
 

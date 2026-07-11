@@ -1,4 +1,4 @@
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 panelFile = fullfile(analysisDir, 'pr_bns_component_panel.csv');
@@ -31,7 +31,7 @@ if ~isempty(missingCore)
     error('Missing required variables: %s', strjoin(missingCore, ', '));
 end
 
-T.event_date = parse_date_flex(T.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = lower(strtrim(string(T.root_code)));
 
 candidateNumeric = [ cfg.outcomes, "shock_target_10bp", "root_gg", "regime_hike", "state_pre_rv_z", "state_pre_rsvneg_z", "ma3_target_10bp_z", "T_e", "P_e", "target_x_hike", "target_x_preRV", "target_x_preRSVneg", "target_x_memory", "target_x_T", "target_x_P" ];

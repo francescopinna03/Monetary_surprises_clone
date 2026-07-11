@@ -1,12 +1,12 @@
-function dt = parse_date_flex(x)
+function dt = Parse_datetime_flexible(x)
 
     if isdatetime(x)
-        dt = dateshift(x, 'start', 'day');
+        dt = x;
         return;
     end
 
     if isnumeric(x)
-        dt = dateshift(datetime(x, 'ConvertFrom', 'excel'), 'start', 'day');
+        dt = datetime(x, 'ConvertFrom', 'excel');
         return;
     end
 
@@ -14,7 +14,7 @@ function dt = parse_date_flex(x)
         x = string(x);
     end
 
-    fmts = {'yyyy-MM-dd', 'dd/MM/yyyy', 'MM/dd/yyyy', 'dd-MMM-yyyy', 'yyyy-MM-dd HH:mm', 'yyyy-MM-dd HH:mm:ss', 'dd/MM/yyyy HH:mm', 'MM/dd/yyyy HH:mm', 'dd-MMM-yyyy HH:mm'};
+    fmts = {'yyyy-MM-dd HH:mm', 'yyyy-MM-dd HH:mm:ss', 'dd/MM/yyyy HH:mm', 'dd/MM/yyyy HH:mm:ss', 'MM/dd/yyyy HH:mm', 'MM/dd/yyyy HH:mm:ss', 'dd-MMM-yyyy HH:mm', 'dd-MMM-yyyy HH:mm:ss', 'yyyy-MM-dd''T''HH:mm:ss', 'yyyy-MM-dd''T''HH:mm', 'yyyy-MM-dd', 'dd/MM/yyyy', 'MM/dd/yyyy', 'dd-MMM-yyyy'};
     best = NaT(size(x));
     bestBad = inf;
 
@@ -35,5 +35,5 @@ function dt = parse_date_flex(x)
         end
     end
 
-    dt = dateshift(best, 'start', 'day');
+    dt = best;
 end

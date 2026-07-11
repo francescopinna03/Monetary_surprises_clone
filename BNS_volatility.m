@@ -31,7 +31,7 @@
 % Output/analysis/pr_bns_feasibility_report.csv.
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 statePanelFile = fullfile(analysisDir, 'pr_state_dependent_panel.csv');
@@ -43,7 +43,7 @@ minMedianBars = 6;
 
 T = readtable(statePanelFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-T.event_date = parse_date_flex(T.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = string(T.root_code);
 
 numVars = ["shock_target_10bp", "regime_hike", "state_pre_rv_z", "state_pre_rsvneg_z", "ma3_target_10bp_z", "root_gg", "PR_abs_jump", "asinh_PR_rv", "asinh_PR_rsv_neg"];
@@ -61,9 +61,9 @@ T.target_x_memory = T.shock_target_10bp .* T.ma3_target_10bp_z;
 
 B = readtable(barFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-B.event_date = parse_date_flex(B.event_date);
+B.event_date = Parse_date_flexible(B.event_date);
 B.root_code = string(B.root_code);
-B.bar_time = parse_datetime_flex(B.bar_time);
+B.bar_time = Parse_datetime_flexible(B.bar_time);
 
 if ~isnumeric(B.r_bar)
     B.r_bar = str2double(B.r_bar);

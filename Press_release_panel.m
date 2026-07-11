@@ -30,7 +30,7 @@
 
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 windowDir = fullfile(projectRoot, 'Output', 'event_windows');
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
@@ -46,7 +46,7 @@ eampdCandidates{4} = fullfile(projectRoot, 'Raw', 'EA_MPD', 'ea_mpd_clean.csv');
 eampdCandidates{5} = fullfile(projectRoot, 'Raw', 'EA_MPD', 'Dataset_EA-MPD.csv');
 eampdCandidates{6} = fullfile(projectRoot, 'Raw', 'EA_MPD', 'Dataset_EA_MPD.csv');
 
-eampdFile = locate_first_existing(eampdCandidates);
+eampdFile = Locate_first_existing(eampdCandidates);
 
 P = readtable(panelFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
@@ -57,10 +57,10 @@ if ~isempty(missingVars)
     error('Mancano colonne in event_window_panel.csv: %s', strjoin(missingVars, ', '));
 end
 
-P.event_date = parse_date_flex(P.event_date);
-P.trade_date = parse_date_flex(P.trade_date);
-P.pr_datetime_local = parse_datetime_flex(P.pr_datetime_local);
-P.pc_datetime_local = parse_datetime_flex(P.pc_datetime_local);
+P.event_date = Parse_date_flexible(P.event_date);
+P.trade_date = Parse_date_flexible(P.trade_date);
+P.pr_datetime_local = Parse_datetime_flexible(P.pr_datetime_local);
+P.pc_datetime_local = Parse_datetime_flexible(P.pc_datetime_local);
 P.root_code = string(P.root_code);
 P.file_name_clean = string(P.file_name_clean);
 P.event_id = string(P.event_id);
@@ -75,7 +75,7 @@ for v = numVars
 end
 
 if ~islogical(P.PR_window_eligible)
-    P.PR_window_eligible = string_to_bool(P.PR_window_eligible);
+    P.PR_window_eligible = String_to_boolean(P.PR_window_eligible);
 end
 
 PR = P(P.PR_window_eligible, :);
@@ -209,14 +209,14 @@ function E = load_eampd_file(eampdFile)
     end
 
     names = string(T.Properties.VariableNames);
-    dateVar = find_col(names, ["event_date", "date", "Date", "meeting_date", "meetingday", "meeting_day", "govc_date", "eventday", "date_meeting"]);
+    dateVar = Find_column(names, ["event_date", "date", "Date", "meeting_date", "meetingday", "meeting_day", "govc_date", "eventday", "date_meeting"]);
 
     if strlength(dateVar) == 0
         error('Colonna data non trovata in EA-MPD.');
     end
 
     E = table();
-    E.event_date = parse_date_flex(T.(dateVar));
+    E.event_date = Parse_date_flexible(T.(dateVar));
 
     for col = names(names ~= dateVar)
         newName = matlab.lang.makeValidName("eampd_" + col);

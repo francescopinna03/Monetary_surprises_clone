@@ -30,7 +30,7 @@
 % Output/analysis/shrinkage_postols_summary.csv.
 clear; clc;
 
-projectRoot = get_project_root();
+projectRoot = Get_project_root();
 
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 panelFile = fullfile(analysisDir, 'pr_state_dependent_panel.csv');
@@ -49,7 +49,7 @@ rng(cfg.seed);
 
 T = readtable(panelFile, 'TextType', 'string', 'VariableNamingRule', 'preserve');
 
-T.event_date = parse_date_flex(T.event_date);
+T.event_date = Parse_date_flexible(T.event_date);
 T.root_code = string(T.root_code);
 
 need = ["PR_abs_jump", "asinh_PR_rv", "asinh_PR_rsv_neg", "shock_target_10bp", "regime_hike", "target_x_hike", "state_pre_rv_z", "target_x_preRV", "state_pre_rsvneg_z", "target_x_preRSVneg", "M1_e_z", "target_x_M1", "ma3_target_10bp_z", "target_x_memory", "T_e", "target_x_T", "P_e", "target_x_P", "root_gg"];

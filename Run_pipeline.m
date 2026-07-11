@@ -1,7 +1,7 @@
 diary(fullfile(fileparts(mfilename('fullpath')), 'pipeline_run.log'));
 
 fprintf('Pipeline start %s\n', string(datetime('now')));
-fprintf('Data root: %s\n', get_project_root());
+fprintf('Data root: %s\n', Get_project_root());
 
 fprintf('\n[ 1/17] Audit_Barchart\n');
 Audit_Barchart;
