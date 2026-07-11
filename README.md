@@ -22,6 +22,10 @@ The code is written in MATLAB and uses standard table, datetime and matrix opera
 
 All scripts resolve the location of the data package through the shared helper `get_project_root.m`, so no source file needs to be edited before replication. The helper looks for the data folder in the following order: the environment variable `ECONOMETRICS_DATA_ROOT` (if set), a folder named `Econometrics_data` next to the MATLAB scripts, and finally a folder named `Econometrics_data` in the current working directory. If none of these resolves to a folder containing the expected `Raw/` subfolder, the scripts stop with an explicit error message.
 
+Common utilities are shared function files in the repository root: `parse_date_flex.m`, `parse_datetime_flex.m`, `string_to_bool.m`, `locate_first_existing.m` and `find_col.m`. They are found automatically when MATLAB runs from the repository folder or when the folder is on the MATLAB path.
+
+The stochastic steps are seeded for exact reproducibility. `Hierarchical_shrinkage.m` seeds the cross-validation fold assignment and `Quasi_markov_residual_predictability.m` seeds the bootstrap draws, both through a `cfg.seed` field set at the top of the script. Changing the seed changes the bootstrap p-values and the selected penalty within sampling noise; keeping the default reproduces the reported numbers bit for bit.
+
 The pipeline deliberately includes a large number of diagnostic checks, intermediate summaries and debugging tables. The authors agree that a similar design choice reflects the size and fragility of the underlying intraday dataset. Since the empirical analysis depends on high-frequency futures prices, event-time matching, contract selection and short-window realized measures, each step produces auxiliary outputs that make the data-management process inspectable.
 
 These diagnostics are part of the computational strategy used to preserve data integrity throughout the pipeline. File-level manifests, cleaning logs, contract-day quality summaries, event-coverage reports, window-level eligibility checks and model-summary tables allow the user to verify whether each transformation is coherent before moving to the next stage of the analysis. In this sense, the repository is structured also to document the path by which the final estimation sample is obtained from a large and heterogeneous set of raw intraday files.
@@ -30,7 +34,23 @@ The raw input files are provided separately together with the paper draft, as a 
 
 ## Repository structure
 
-The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps.
+The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `run_pipeline.m` executes all seventeen steps in order and writes a full console log to `pipeline_run.log`.
+
+A full replication therefore reduces to one command. From MATLAB:
+
+```matlab
+cd /path/to/this/repository
+setenv('ECONOMETRICS_DATA_ROOT', '/path/to/Econometrics_data')
+run_pipeline
+```
+
+From the terminal, without opening the MATLAB desktop:
+
+```bash
+./run_pipeline.sh /path/to/Econometrics_data
+```
+
+The shell wrapper uses `matlab` from the PATH or the newest installation found in `/Applications`, exports the data root when passed as an argument, and runs the pipeline headless with `matlab -batch`. The environment variable can be omitted entirely when the `Econometrics_data` folder sits next to the scripts.
 
 | Step | File | Role |
 | --- | --- | --- |
