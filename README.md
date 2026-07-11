@@ -34,7 +34,23 @@ The raw input files are provided separately together with the paper draft, as a 
 
 ## Repository structure
 
-The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `run_pipeline.m` executes all seventeen steps in order and writes a full console log to `pipeline_run.log`; a full replication therefore reduces to setting the data root and calling `run_pipeline` from the repository folder.
+The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `run_pipeline.m` executes all seventeen steps in order and writes a full console log to `pipeline_run.log`.
+
+A full replication therefore reduces to one command. From MATLAB:
+
+```matlab
+cd /path/to/this/repository
+setenv('ECONOMETRICS_DATA_ROOT', '/path/to/Econometrics_data')
+run_pipeline
+```
+
+From the terminal, without opening the MATLAB desktop:
+
+```bash
+./run_pipeline.sh /path/to/Econometrics_data
+```
+
+The shell wrapper uses `matlab` from the PATH or the newest installation found in `/Applications`, exports the data root when passed as an argument, and runs the pipeline headless with `matlab -batch`. The environment variable can be omitted entirely when the `Econometrics_data` folder sits next to the scripts.
 
 | Step | File | Role |
 | --- | --- | --- |
