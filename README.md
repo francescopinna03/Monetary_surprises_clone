@@ -34,7 +34,7 @@ The raw input files are provided separately together with the paper draft, as a 
 
 ## Repository structure
 
-The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps.
+The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `run_pipeline.m` executes all seventeen steps in order and writes a full console log to `pipeline_run.log`; a full replication therefore reduces to setting the data root and calling `run_pipeline` from the repository folder.
 
 | Step | File | Role |
 | --- | --- | --- |
