@@ -180,18 +180,6 @@ if ~isempty(presentOis)
     end
 end
 
-function pathOut = locate_first_existing(candidates)
-
-    pathOut = "";
-
-    for i = 1:numel(candidates)
-        if exist(candidates{i}, 'file')
-            pathOut = string(candidates{i});
-            return;
-        end
-    end
-end
-
 function flag = rows_with_eampd_data(T)
 
     flag = false(height(T), 1);
@@ -370,22 +358,6 @@ function x = to_numeric_vector(x)
     x = str2double(string(x));
 end
 
-function out = find_col(allNames, candidates)
-
-    out = "";
-    a = lower(allNames);
-
-    for c = lower(candidates)
-
-        idx = find(a == c, 1);
-
-        if ~isempty(idx)
-            out = allNames(idx);
-            return;
-        end
-    end
-end
-
 function y = safe_log(x)
 
     y = nan(size(x));
@@ -412,96 +384,4 @@ function T = format_pr_panel_for_write(T)
             T.(c) = string(T.(c), 'yyyy-MM-dd HH:mm');
         end
     end
-end
-
-function dt = parse_date_flex(x)
-
-    if isdatetime(x)
-        dt = dateshift(x, 'start', 'day');
-        return;
-    end
-
-    if isnumeric(x)
-        dt = dateshift(datetime(x, 'ConvertFrom', 'excel'), 'start', 'day');
-        return;
-    end
-
-    if iscell(x)
-        x = string(x);
-    end
-
-    if ischar(x)
-        x = string(x);
-    end
-
-    fmts = {'yyyy-MM-dd', 'dd/MM/yyyy', 'MM/dd/yyyy', 'dd-MMM-yyyy', 'yyyy-MM-dd HH:mm', 'dd/MM/yyyy HH:mm', 'MM/dd/yyyy HH:mm'};
-    best = NaT(size(x));
-    bestBad = inf;
-
-    for i = 1:numel(fmts)
-
-        try
-
-            dTry = datetime(x, 'InputFormat', fmts{i});
-            nBad = sum(isnat(dTry));
-
-            if nBad < bestBad
-                bestBad = nBad;
-                best = dTry;
-            end
-
-        catch
-        end
-    end
-
-    dt = dateshift(best, 'start', 'day');
-end
-
-function dt = parse_datetime_flex(x)
-
-    if isdatetime(x)
-        dt = x;
-        return;
-    end
-
-    if isnumeric(x)
-        dt = datetime(x, 'ConvertFrom', 'excel');
-        return;
-    end
-
-    if iscell(x)
-        x = string(x);
-    end
-
-    if ischar(x)
-        x = string(x);
-    end
-
-    fmts = {'yyyy-MM-dd HH:mm', 'dd/MM/yyyy HH:mm', 'MM/dd/yyyy HH:mm', 'dd-MMM-yyyy HH:mm'};
-    best = NaT(size(x));
-    bestBad = inf;
-
-    for i = 1:numel(fmts)
-
-        try
-
-            dTry = datetime(x, 'InputFormat', fmts{i});
-            nBad = sum(isnat(dTry));
-
-            if nBad < bestBad
-                bestBad = nBad;
-                best = dTry;
-            end
-
-        catch
-        end
-    end
-
-    dt = best;
-end
-
-function y = string_to_bool(x)
-
-    x = lower(strtrim(string(x)));
-    y = x == "true" | x == "1";
 end
