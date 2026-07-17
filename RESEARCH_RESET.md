@@ -6,6 +6,21 @@ The original headline claim should be retired. The available evidence does not i
 
 The revised working paper asks whether ECB announcements merely inject a common monetary shock or instead create risk in one cross-asset direction while resolving pre-existing uncertainty in another. This question uses the paired cross-asset structure of the data, does not depend on the weak support of squared OIS surprises, and yields a falsifiable matrix restriction.
 
+## Post-Step-20 update
+
+Step 20 identifies the negative, equity-dominated direction but not the
+positive Bund-dominated direction. The bootstrap interval for the smallest
+eigenvalue lies below zero, whereas the interval for the largest eigenvalue
+crosses zero. The project therefore does not claim simultaneous risk creation
+and resolution. Its surviving proposition is narrower: scheduled ECB
+announcements may resolve pre-existing equity risk relative to normal
+intraday continuation.
+
+Step 21 is the binding bias-adjusted test of that proposition. It applies
+common-support trimming, leave-year-out control-only continuation models and a
+bootstrap that re-estimates the entire nuisance and matching procedure. The
+locked specification and pass/fail rule are recorded in `STEP21_PROTOCOL.md`.
+
 ## What happened to the original project
 
 | Stage | Maintained idea | What the audit changes |
