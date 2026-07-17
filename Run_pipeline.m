@@ -54,6 +54,9 @@ BNS_volatility;
 fprintf('\n[17/17] Quasi_markov_residual_predictability\n');
 Quasi_markov_residual_predictability;
 
+fprintf('\n[18/18] Announcement_counterfactual\n');
+Announcement_counterfactual;
+
 fprintf('\nPipeline end %s\n', string(datetime('now')));
 
 diary off;
