@@ -300,7 +300,8 @@ function [muHat, diagnostics] = crossfit_control_continuation(P, Xz, cfg)
     Z = nuisance_design(P, Xz);
     Y = [P.d_11, P.d_12, P.d_22];
     control = ~P.is_event;
-    muHat = nan(height(P), 3);
+    linearHat = nan(height(P), 3);
+    baselineHat = nan(height(P), 3);
     years = unique(P.year_number);
 
     for y = transpose(years)
@@ -310,25 +311,48 @@ function [muHat, diagnostics] = crossfit_control_continuation(P, Xz, cfg)
             train = control;
         end
         beta = ridge_fit(Z(train,:), Y(train,:), cfg.ridgeScale);
-        muHat(predict,:) = Z(predict,:) * beta;
+        linearHat(predict,:) = Z(predict,:) * beta;
+        baselineHat(predict,:) = repmat(mean(Y(train,:),1),sum(predict),1);
     end
 
-    missing = any(~isfinite(muHat), 2);
+    missing = any(~isfinite(linearHat), 2) | any(~isfinite(baselineHat),2);
     if any(missing)
         beta = ridge_fit(Z(control,:), Y(control,:), cfg.ridgeScale);
-        muHat(missing,:) = Z(missing,:) * beta;
+        linearHat(missing,:) = Z(missing,:) * beta;
+        baselineHat(missing,:) = repmat(mean(Y(control,:),1),sum(missing),1);
     end
 
     outcome = ["d_11"; "d_12"; "d_22"];
+    linear_leave_year_out_r2 = nan(3,1);
+    shrinkage_weight = nan(3,1);
     cv_r2 = nan(3,1);
+    muHat = nan(height(P),3);
     for j = 1:3
+        deltaControl = linearHat(control,j) - baselineHat(control,j);
+        targetControl = Y(control,j) - baselineHat(control,j);
+        denomWeight = sum(deltaControl.^2);
+        if isfinite(denomWeight) && denomWeight > 0
+            alpha = sum(targetControl .* deltaControl) ./ denomWeight;
+            alpha = min(max(alpha,0),1);
+        else
+            alpha = 0;
+        end
+        shrinkage_weight(j) = alpha;
+        muHat(:,j) = baselineHat(:,j) + alpha .* (linearHat(:,j) - baselineHat(:,j));
+
+        linearErr = Y(control,j) - linearHat(control,j);
         err = Y(control,j) - muHat(control,j);
         denom = sum((Y(control,j) - mean(Y(control,j))).^2);
-        if denom > 0; cv_r2(j) = 1 - sum(err.^2) ./ denom; end
+        if denom > 0
+            linear_leave_year_out_r2(j) = 1 - sum(linearErr.^2) ./ denom;
+            cv_r2(j) = 1 - sum(err.^2) ./ denom;
+        end
     end
-    diagnostics = table(outcome, cv_r2, repmat(sum(control),3,1), ...
+    diagnostics = table(outcome, linear_leave_year_out_r2, shrinkage_weight, cv_r2, ...
+        repmat(sum(control),3,1), ...
         repmat(size(Z,2),3,1), repmat(cfg.ridgeScale,3,1), ...
-        'VariableNames', {'outcome','leave_year_out_r2','n_control','n_design_columns','ridge_scale'});
+        'VariableNames', {'outcome','linear_leave_year_out_r2','shrinkage_weight', ...
+        'leave_year_out_r2','n_control','n_design_columns','ridge_scale'});
 end
 
 
@@ -681,14 +705,15 @@ function M = make_manifest(inputFile, outputDir, mode, cfg, D)
     overall = D(D.criterion=="overall_final_decision",:);
     key = ["step";"mode";"seed";"bootstrap_draws";"placebo_draws";"n_matches"; ...
         "match_max_years";"calendar_weight";"support_quantile_low";"support_quantile_high"; ...
-        "caliper_quantile";"ridge_scale";"minimum_retention_share"; ...
+        "caliper_quantile";"ridge_scale";"nuisance_predictive_guard";"minimum_retention_share"; ...
         "minimum_usable_bootstrap_share";"git_sha";"matlab_version"; ...
         "input_file";"input_file_bytes";"input_file_sha256";"output_directory"; ...
         "generated_at";"decision_status"];
     value = ["21";mode;string(cfg.seed);string(cfg.bootstrapRep);string(cfg.placeboRep); ...
         string(cfg.nMatches);string(cfg.matchMaxYears);string(cfg.calendarWeight); ...
         string(cfg.supportQuantiles(1));string(cfg.supportQuantiles(2));string(cfg.caliperQuantile); ...
-        string(cfg.ridgeScale);string(cfg.minRetentionShare);string(cfg.minUsableBootstrapShare); ...
+        string(cfg.ridgeScale);"control_oos_convex_shrink_to_fold_mean"; ...
+        string(cfg.minRetentionShare);string(cfg.minUsableBootstrapShare); ...
         string(getenv('STEP21_GIT_SHA'));string(version());string(inputFile);string(inputInfo.bytes); ...
         file_sha256(inputFile);string(outputDir);string(datetime('now'),'yyyy-MM-dd HH:mm:ss'); ...
         overall.status(1)];
