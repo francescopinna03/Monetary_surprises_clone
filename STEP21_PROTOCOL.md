@@ -32,6 +32,15 @@ parsimonious specification is fixed to avoid high-order extrapolation of a
 three-element matrix outcome. Predictions are leave-year-out cross-fitted and
 use a numerically negligible, fixed ridge stabilization.
 
+The nuisance correction is subject to a control-only predictive guard. For
+each matrix element, the cross-fitted linear prediction is contracted toward
+the corresponding leave-year-out training mean. The contraction weight is the
+OOS least-squares weight computed exclusively on non-event observations and
+clipped to `[0,1]`. Thus a nuisance model that does not improve control-date
+prediction receives zero weight and cannot inject extrapolation noise into the
+ECB estimand. Both the unguarded and guarded OOS R-squared and the contraction
+weight are reported. No event outcome enters this choice.
+
 Events are matched to ten non-event dates with the same release-clock regime
 and weekday and within two calendar years.  Matching uses only the five
 pre-release continuous variables.  Common support is imposed in two ways:

@@ -117,7 +117,7 @@ Step 20 can be run without repeating the preceding stages once `announcement_cou
 
 ### Bias-adjusted risk-resolution test
 
-`Announcement_risk_resolution.m` treats `announcement_rotation_date_matrices.csv` as immutable input. It estimates normal pre/post matrix continuation exclusively on non-event dates with leave-year-out cross-fitting. Events are retained only on common support and are compared with ten exact-clock, exact-weekday controls within two years. The nuisance model, support rule and matches are re-estimated in every stratified date-bootstrap draw.
+`Announcement_risk_resolution.m` treats `announcement_rotation_date_matrices.csv` as immutable input. It estimates normal pre/post matrix continuation exclusively on non-event dates with leave-year-out cross-fitting. A control-only predictive guard contracts each nuisance prediction toward its fold mean whenever the linear model does not improve OOS loss; event outcomes never enter that choice. Events are retained only on common support and are compared with ten exact-clock, exact-weekday controls within two years. The nuisance model, predictive guard, support rule and matches are re-estimated in every stratified date-bootstrap draw.
 
 The protocol and binding decision rule are recorded in `STEP21_PROTOCOL.md`. The negative eigenvalue must have a bootstrap upper endpoint below zero both in the full sample and after excluding 2020; retention and usable-bootstrap gates must also pass. The positive eigenvalue and the relative Bund-equity rotation are secondary and cannot rescue a failed decision.
 
