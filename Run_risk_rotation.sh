@@ -21,7 +21,7 @@ fi
 
 if [ -z "${matlab_bin:-}" ]; then
     echo "MATLAB not found. Add matlab to PATH or install it in /Applications." >&2
-    echo "Usage: ./Run_risk_rotation.sh [/path/to/Econometrics_data] [draws]" >&2
+    echo "Usage: ./Run_risk_rotation.sh [/project/root/containing/Output] [draws]" >&2
     exit 1
 fi
 

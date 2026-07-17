@@ -38,7 +38,19 @@
 
 clear; clc;
 
-projectRoot = Get_project_root();
+% Step 20 is an incremental analysis: it only needs the cleaned bars and
+% the Step-18 window panel under Output/.  When the runner supplies an
+% explicit ECONOMETRICS_DATA_ROOT, use it directly instead of requiring the
+% full replication package (and, in particular, a Raw/ directory).
+projectRoot = getenv('ECONOMETRICS_DATA_ROOT');
+if isempty(projectRoot)
+    projectRoot = Get_project_root();
+elseif exist(fullfile(projectRoot, 'Output'), 'dir') ~= 7
+    error(['ECONOMETRICS_DATA_ROOT does not contain Output/: %s. ' ...
+        'Pass the project directory that contains Output/analysis and Output/cleaned.'], ...
+        projectRoot);
+end
+
 analysisDir = fullfile(projectRoot, 'Output', 'analysis');
 cleanDir = fullfile(projectRoot, 'Output', 'cleaned');
 windowFile = fullfile(analysisDir, 'announcement_counterfactual_windows.csv');
