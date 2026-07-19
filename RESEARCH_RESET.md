@@ -1,12 +1,45 @@
 # Research reset: from state amplification to announcement risk rotation
 
-## Bottom line
+> **Superseded evidence notice (2026-07-18).** This document records the
+> research path based on event windows constructed before the Barchart/ECB
+> timezone error was discovered. Those Barchart outcomes were measured roughly
+> six or seven hours after the scheduled release. The Step-18 through Step-21
+> empirical conclusions below, including `FAIL_RISK_RESOLUTION`, are void until
+> all twenty-one steps are rerun under `timezone_v1`. See
+> `TIMEZONE_CORRECTION_PROTOCOL.md`. The document is retained as an audit trail,
+> not as the current assessment of the hypothesis.
 
-The original headline claim should be retired. The available evidence does not identify a stable monetary-surprise effect on abnormal volatility, does not identify a state gradient of that effect, and does not establish invariance of the relative response. The robust empirical fact left by the falsification exercises is different: around ECB announcements, post-release variation rises relative to normal continuation in Euro Bund futures and falls relative to it in Euro Stoxx 50 futures.
+## Current reopening protocol
+
+The project now treats the discovery as an identification reset. Before any
+coefficient is interpreted, a fresh-export audit must certify both the
+Barchart time zone and the provider's candle-label convention. New outcomes
+then separate the scheduled rate-decision release from the conference/Q&A;
+they do not use the observed volume peak to choose either clock.
+
+The minimum structural decomposition is two-dimensional within each phase:
+monetary-policy (`MP`) news and central-bank-information (`CBI`) news. PR and PC
+are distinct measurement phases, not synonyms for target and path. The ME
+window is an aggregate benchmark. Target/path and additional curve dimensions
+remain diagnostics and become structural refinements only if the broad MP/CBI
+pair demonstrably omits stable, outcome-relevant variation.
+
+No coefficient, volatility decomposition or eigenvalue computed on the old
+clock is revived by this design. The first admissible new evidence is produced
+only after `window_semantics_v1` passes and is written to separate
+`phase_windows` and `phase_counterfactuals` output directories.
+
+## Historical bottom line (superseded)
+
+Before discovery of the clock error, the working conclusion was that the
+original headline claim should be retired. That conclusion is no longer
+supported by a valid event-window measurement and must not be cited as a
+result. The same applies to the apparent Bund--equity contrast described
+below.
 
 The revised working paper asks whether ECB announcements merely inject a common monetary shock or instead create risk in one cross-asset direction while resolving pre-existing uncertainty in another. This question uses the paired cross-asset structure of the data, does not depend on the weak support of squared OIS surprises, and yields a falsifiable matrix restriction.
 
-## Post-Step-20 update
+## Historical post-Step-20 update (superseded)
 
 Step 20 identifies the negative, equity-dominated direction but not the
 positive Bund-dominated direction. The bootstrap interval for the smallest
