@@ -41,6 +41,40 @@ legacy intermediate files without the matching manifest. After Step 4,
 perturbations and the candle selected by the legacy naive-clock code for every
 preferred event contract.
 
+### Certified phase extension
+
+The timezone correction does not by itself determine whether the provider
+timestamp labels the beginning or the end of its five-minute OHLCV interval.
+`Window_semantics_certification.m` resolves this with fresh Central/UTC exports
+and an independent 1-minute-to-5-minute reconstruction. Until the resulting
+`window_semantics_v1` manifest is certified, all new phase-specific scripts
+stop before producing estimates.
+
+After certification, the extension constructs non-overlapping outcomes for
+the rate-decision press release (`PR`, +5:+25 return endpoints) and the press
+conference/Q&A (`PC`, +5:+45). The broader monetary-event window (`ME`) is
+retained only as an aggregate benchmark. Surprise identification follows the
+Jarociński--Karadi decomposition into monetary-policy (`MP`) and central-bank-
+information (`CBI`) shocks separately in PR and PC. Curve PC2--PC4 and simple
+target/path proxies are diagnostic tests of whether this broad pair is
+sufficient, not extra structural shocks.
+
+Copy `config/window_semantics_inputs_template.csv` to
+`Raw/Certification/window_semantics_inputs.csv`, fill the five explicit input
+paths, and run:
+
+```bash
+./Run_phase_extension.sh /path/to/Econometrics_data certify
+./Run_phase_extension.sh /path/to/Econometrics_data build
+```
+
+The build produces phase windows, shock-component audits and distinct PR, PC
+and ME non-event counterfactuals. Detailed frozen rules are in
+`WINDOW_SEMANTICS_PROTOCOL.md`, `PHASE_WINDOW_PROTOCOL.md`,
+`STEP22_SHOCK_COMPONENTS.md` and `PHASE_COUNTERFACTUAL_PROTOCOL.md`. The legacy
+Steps 5--21 remain unchanged for audit and their historical outputs are never
+overwritten by this extension.
+
 ## Notes on reproducibility
 
 The code is written in MATLAB and uses standard table, datetime and matrix operations. 
