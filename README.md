@@ -87,6 +87,15 @@ and ME non-event counterfactuals. Detailed frozen rules are in
 Steps 5--21 remain unchanged for audit and their historical outputs are never
 overwritten by this extension.
 
+Step 23 then tests whether curve PC2 adds stable information beyond the broad
+MP--CBI pair. Promotion requires Holm-adjusted in-sample evidence, paired
+leave-one-event-out bootstrap improvement, the implied rotation-invariance
+audit and leave-top-k stability for both abnormal log BV and log RV. PC2--PC4
+energy and target/path models are diagnostic; ME cannot determine the
+decision. Run
+`./Run_component_sufficiency.sh /path/to/Econometrics_data`; the full protocol
+is in `STEP23_COMPONENT_SUFFICIENCY.md`.
+
 ## Notes on reproducibility
 
 The code is written in MATLAB and uses standard table, datetime and matrix operations. 

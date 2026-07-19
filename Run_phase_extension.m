@@ -29,6 +29,9 @@ if ismember(mode, ["build", "all"])
         Announcement_phase_counterfactual();
     end
     setenv('ANNOUNCEMENT_PHASE', previousPhase);
+
+    Component_sufficiency_self_test();
+    Component_sufficiency_analysis();
 end
 
 fprintf('Phase extension end %s | mode=%s\n', string(datetime('now')), mode);
