@@ -1,6 +1,5 @@
 role,relative_path,declared_time_zone,bar_minutes,description
 archive_5m,Raw/Barchart_futures/REPLACE_WITH_ARCHIVED_FILE.csv,America/Chicago,5,Archived project export for the same contract and dates
-central_reexport_5m,Raw/Certification/REPLACE_WITH_CENTRAL_5M.csv,America/Chicago,5,Fresh Barchart export with Central Time selected explicitly
-utc_reexport_5m,Raw/Certification/REPLACE_WITH_UTC_5M.csv,UTC,5,Fresh Barchart export with UTC selected explicitly
-one_minute,Raw/Certification/REPLACE_WITH_1MIN.csv,America/Chicago,1,One-minute bars for the same contract and dates
-five_minute,Raw/Certification/REPLACE_WITH_5MIN.csv,America/Chicago,5,Five-minute bars matching the one-minute sample
+premier_reexport_5m,Raw/Certification/REPLACE_WITH_PREMIER_5MIN.csv,America/Chicago,5,Fresh Barchart Premier futures export under the provider's published CT convention
+one_minute,Raw/Certification/REPLACE_WITH_1MIN.csv,America/Chicago,1,One-minute Premier bars for the same contract and dates
+five_minute,Raw/Certification/REPLACE_WITH_PREMIER_5MIN.csv,America/Chicago,5,Five-minute Premier bars matching the one-minute sample

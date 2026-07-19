@@ -45,10 +45,12 @@ preferred event contract.
 
 The timezone correction does not by itself determine whether the provider
 timestamp labels the beginning or the end of its five-minute OHLCV interval.
-`Window_semantics_certification.m` resolves this with fresh Central/UTC exports
-and an independent 1-minute-to-5-minute reconstruction. Until the resulting
-`window_semantics_v1` manifest is certified, all new phase-specific scripts
-stop before producing estimates.
+`Window_semantics_certification.m` resolves this using Barchart's published
+Central Time convention for futures, exact archive-versus-fresh Premier
+reproduction, and an independent 1-minute-to-5-minute reconstruction. It does
+not create a synthetic UTC export when the Premier form offers no time-zone
+selector. Until the resulting `window_semantics_v1` manifest is certified, all
+new phase-specific scripts stop before producing estimates.
 
 After certification, the extension constructs non-overlapping outcomes for
 the rate-decision press release (`PR`, +5:+25 return endpoints) and the press
@@ -60,8 +62,18 @@ target/path proxies are diagnostic tests of whether this broad pair is
 sufficient, not extra structural shocks.
 
 Copy `config/window_semantics_inputs_template.csv` to
-`Raw/Certification/window_semantics_inputs.csv`, fill the five explicit input
-paths, and run:
+`Raw/Certification/window_semantics_inputs.csv`, fill the four input roles
+(the fresh Premier five-minute file can fill two roles).
+
+For the certified FXU23 Premier sample used by this project, no manual path
+editing is needed:
+
+```bash
+cp config/window_semantics_inputs_fxu23_premier.csv \
+  /path/to/Econometrics_data/Raw/Certification/window_semantics_inputs.csv
+```
+
+Then run:
 
 ```bash
 ./Run_phase_extension.sh /path/to/Econometrics_data certify

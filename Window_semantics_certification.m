@@ -1,9 +1,10 @@
 %% CERTIFICATION: BARCHART TIME ZONE AND BAR-LABEL SEMANTICS.
 %
-% This diagnostic is deliberately outcome-free. It compares an archived raw
-% export with explicit America/Chicago and UTC re-exports, then reconstructs
-% five-minute OHLCV bars from one-minute data under interval-start and
-% interval-end timestamp conventions. No ECB coefficient is estimated.
+% This diagnostic is deliberately outcome-free. It combines Barchart's
+% published Central Time convention for futures with an archived-versus-fresh
+% Premier reproduction, then reconstructs five-minute OHLCV bars from
+% one-minute data under interval-start and interval-end timestamp conventions.
+% No ECB coefficient is estimated.
 %
 % Required input manifest:
 %   Raw/Certification/window_semantics_inputs.csv
@@ -27,7 +28,7 @@ if exist(inputManifestFile, 'file') ~= 2
         'Raw/Certification/window_semantics_inputs.csv and replace the paths.']);
 end
 
-I = readtable(inputManifestFile, 'TextType', 'string', ...
+I = readtable(inputManifestFile, 'Delimiter', ',', 'TextType', 'string', ...
     'VariableNamingRule', 'preserve');
 requiredColumns = ["role", "relative_path", "declared_time_zone", "bar_minutes"];
 missing = requiredColumns(~ismember(requiredColumns, string(I.Properties.VariableNames)));
@@ -42,7 +43,7 @@ if ~isnumeric(I.bar_minutes)
     I.bar_minutes = str2double(I.bar_minutes);
 end
 
-requiredRoles = ["archive_5m", "central_reexport_5m", "utc_reexport_5m", ...
+requiredRoles = ["archive_5m", "premier_reexport_5m", ...
     "one_minute", "five_minute"];
 for role = requiredRoles
     if sum(I.role == role) ~= 1
@@ -50,9 +51,9 @@ for role = requiredRoles
     end
 end
 
-expectedZones = ["America/Chicago", "America/Chicago", "UTC", ...
+expectedZones = ["America/Chicago", "America/Chicago", ...
     "America/Chicago", "America/Chicago"];
-expectedMinutes = [5, 5, 5, 1, 5];
+expectedMinutes = [5, 5, 1, 5];
 for r = 1:numel(requiredRoles)
     row = I.role == requiredRoles(r);
     if I.declared_time_zone(row) ~= expectedZones(r) || ...
@@ -76,12 +77,15 @@ for i = 1:height(I)
 end
 
 archive = bars{find(I.role == "archive_5m", 1)};
-central = bars{find(I.role == "central_reexport_5m", 1)};
-utc = bars{find(I.role == "utc_reexport_5m", 1)};
+premier = bars{find(I.role == "premier_reexport_5m", 1)};
 oneMinute = bars{find(I.role == "one_minute", 1)};
 fiveMinute = bars{find(I.role == "five_minute", 1)};
 
-timeAudit = Audit_timezone_provenance(archive, central, utc, 1e-10);
+codeRoot = fileparts(which('Window_semantics_certification'));
+evidenceFile = fullfile(codeRoot, 'config', ...
+    'window_semantics_timezone_evidence.csv');
+timeEvidence = read_timezone_evidence(evidenceFile);
+timeAudit = Audit_timezone_provenance(archive, premier, 1e-10);
 [barRows, barSummary] = Audit_bar_label_convention(oneMinute, fiveMinute, 1e-10);
 
 timezonePass = all(timeAudit.overall_pass);
@@ -117,10 +121,20 @@ manifest.status = status;
 manifest.timezone_status = conditional_label(timezonePass, "certified", "failed");
 manifest.raw_time_zone = "America/Chicago";
 manifest.analysis_time_zone = "UTC";
+manifest.timezone_evidence_id = timeEvidence.evidence_id;
+manifest.timezone_evidence_method = ...
+    "provider_statement_plus_archived_reexport";
+manifest.timezone_source_url = timeEvidence.source_url;
+manifest.timezone_source_accessed_on = timeEvidence.accessed_on;
+manifest.timezone_evidence_sha256 = File_sha256(evidenceFile);
 manifest.bar_label_status = conditional_label(barPass, "certified", "failed");
 manifest.bar_label_semantics = barSemantics;
 manifest.canonical_bar_time = "interval_end_utc";
-manifest.minimum_timezone_match_share = min(timeAudit.ohlcv_exact_share);
+manifest.timezone_common_rows = min(timeAudit.n_common);
+manifest.minimum_timezone_common_share = ...
+    min(timeAudit.common_share_smaller_file);
+manifest.minimum_timezone_ohlcv_exact_share = ...
+    min(timeAudit.ohlcv_exact_share);
 manifest.bar_label_score_margin = barSummary.score_margin(1);
 manifest.input_manifest_sha256 = File_sha256(inputManifestFile);
 manifest.generated_at_utc = string(datetime('now', 'TimeZone', 'UTC'), ...
@@ -159,6 +173,29 @@ function label = conditional_label(flag, yes, no)
         label = string(yes);
     else
         label = string(no);
+    end
+end
+
+function E = read_timezone_evidence(evidenceFile)
+    if exist(evidenceFile, 'file') ~= 2
+        error('WINDOW_SEMANTICS_TIMEZONE_EVIDENCE_MISSING: %s', evidenceFile);
+    end
+    E = readtable(evidenceFile, 'Delimiter', ',', 'TextType', 'string', ...
+        'VariableNamingRule', 'preserve');
+    required = ["evidence_id", "provider", "instrument_scope", ...
+        "time_zone", "source_url", "claim_summary", "accessed_on"];
+    missing = required(~ismember(required, string(E.Properties.VariableNames)));
+    if ~isempty(missing) || height(E) ~= 1
+        error(['WINDOW_SEMANTICS_TIMEZONE_EVIDENCE_INVALID: expected one row ' ...
+            'with columns %s.'], strjoin(required, ', '));
+    end
+    if E.evidence_id ~= "barchart_futures_ct" || ...
+            E.provider ~= "Barchart" || ...
+            E.instrument_scope ~= "futures" || ...
+            E.time_zone ~= "America/Chicago" || ...
+            strlength(E.source_url) == 0 || strlength(E.claim_summary) == 0
+        error(['WINDOW_SEMANTICS_TIMEZONE_EVIDENCE_INVALID: the frozen ' ...
+            'Barchart futures CT evidence record is inconsistent.']);
     end
 end
 
