@@ -96,6 +96,14 @@ decision. Run
 `./Run_component_sufficiency.sh /path/to/Econometrics_data`; the full protocol
 is in `STEP23_COMPONENT_SUFFICIENCY.md`.
 
+Step 24 estimates PR and PC in one paired stacked system. Its primary
+rotation-invariant Wald test compares the complete quadratic response surfaces
+in the policy-indicator/equity basis. Median-rotation MP and CBI contrasts are
+secondary and require wild-cluster, full rotation-grid and leave-top-k support
+before receiving a component interpretation. ME remains descriptive. Run
+`./Run_phase_component_contrasts.sh /path/to/Econometrics_data`; the protocol
+is in `STEP24_PHASE_COMPONENT_CONTRASTS.md`.
+
 ## Notes on reproducibility
 
 The code is written in MATLAB and uses standard table, datetime and matrix operations. 
