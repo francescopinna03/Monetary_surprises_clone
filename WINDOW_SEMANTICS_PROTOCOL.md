@@ -16,14 +16,26 @@ result.
 ## Inputs
 
 Create `Raw/Certification/window_semantics_inputs.csv` from the template under
-`config/`. It identifies five files for the same contract and overlapping
-dates:
+`config/`. It identifies four roles for the same contract and overlapping
+dates (the same fresh five-minute file may serve two roles):
 
 1. an archived five-minute file used by the project;
-2. a fresh five-minute Barchart export with Central Time selected explicitly;
-3. the same export with UTC selected explicitly;
-4. one-minute bars;
-5. five-minute bars covering the one-minute sample.
+2. a fresh five-minute Barchart Premier futures export;
+3. one-minute Premier bars;
+4. five-minute Premier bars covering the one-minute sample.
+
+The project-specific preset
+`config/window_semantics_inputs_fxu23_premier.csv` records the frozen FXU23
+filenames and can be copied directly into `Raw/Certification/`; it avoids
+manual placeholder substitution without embedding raw licensed data in the
+repository.
+
+Barchart Premier does not expose a time-zone selector in its historical-data
+download form. The frozen evidence record
+`config/window_semantics_timezone_evidence.csv` therefore records Barchart's
+published convention that futures times are Central Time (CT), the supporting
+URL and the access date. The test must not manufacture a UTC-labelled copy of
+the Premier export.
 
 At least 100 common five-minute observations are required. A 2023 contract is
 preferred because it lies within current intraday download coverage and can be
@@ -32,11 +44,15 @@ but the test must cover ordinary bars as well as the event interval.
 
 ## Time-zone decision
 
-The explicit Central and UTC exports are converted to canonical UTC and joined
-by timestamp. The archived file is independently interpreted as Central Time
-and compared with the explicit Central export. Both comparisons must retain at
-least 95 percent of the smaller file and match complete OHLCV rows at a rate of
-at least 99.9 percent.
+The archived and fresh Premier files are independently localized in
+`America/Chicago`, converted to canonical UTC and joined by timestamp. The
+comparison must retain at least 95 percent of the smaller file, include at
+least 100 common bars and match complete OHLCV rows at a rate of at least 99.9
+percent. Certification rests on two distinct provenance elements: the
+provider's published CT convention and exact reproduction of archived wall
+clocks and OHLCV by a fresh Premier export. Full-sample session-clock and
+announcement-volume diagnostics remain corroborating evidence rather than a
+substitute for either provenance element.
 
 ## Bar-label decision
 

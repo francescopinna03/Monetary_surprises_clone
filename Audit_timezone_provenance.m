@@ -1,19 +1,17 @@
-function summary = Audit_timezone_provenance(archiveCentral, explicitCentral, explicitUtc, tolerance)
-%AUDIT_TIMEZONE_PROVENANCE Compare archived, Central and UTC Barchart exports.
+function summary = Audit_timezone_provenance(archiveCentral, premierCentral, tolerance)
+%AUDIT_TIMEZONE_PROVENANCE Reproduce archived Barchart wall clocks and OHLCV.
 %
-% Inputs are standardized tables returned by Read_certification_bars. The
-% archived export is interpreted as America/Chicago only for this diagnostic.
+% Inputs are standardized tables returned by Read_certification_bars. Barchart
+% publishes Central Time (CT) as the clock convention for futures data. This
+% audit checks that a fresh Premier export reproduces the archived project
+% export after both wall clocks are localized in America/Chicago.
 
-    if nargin < 4 || isempty(tolerance)
+    if nargin < 3 || isempty(tolerance)
         tolerance = 1e-10;
     end
 
-    centralUtc = compare_exports(explicitCentral, explicitUtc, ...
-        "explicit_central_vs_explicit_utc", tolerance);
-    archiveCentralMatch = compare_exports(archiveCentral, explicitCentral, ...
-        "archive_vs_explicit_central", tolerance);
-
-    summary = [centralUtc; archiveCentralMatch];
+    summary = compare_exports(archiveCentral, premierCentral, ...
+        "archive_vs_premier_ct_reexport", tolerance);
     minimumRows = 100;
     pass = all(summary.n_common >= minimumRows) && ...
         all(summary.common_share_smaller_file >= 0.95) && ...

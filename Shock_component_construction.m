@@ -74,12 +74,24 @@ for k = 1:numel(windowCodes)
     sheet = windowSheets(k);
     source = read_eampd_window(eampdFile, sheet);
 
-    if numel(unique(source.event_date)) ~= height(source)
-        error('STEP22_DUPLICATE_DATES: duplicate event dates found in sheet "%s".', sheet);
+    excludedJoint = ismember(source.event_date, jointAnnouncementDates);
+    nExcludedJoint = sum(excludedJoint);
+    source.event_date = source.event_date(~excludedJoint);
+    source.ois = source.ois(~excludedJoint, :);
+    source.stoxx50 = source.stoxx50(~excludedJoint);
+    nSource = numel(source.event_date);
+
+    [distinctDates, ~, dateGroup] = unique(source.event_date);
+    dateCounts = accumarray(dateGroup, 1);
+    duplicateDates = distinctDates(dateCounts > 1);
+    if ~isempty(duplicateDates)
+        duplicateText = strjoin(string(duplicateDates, 'yyyy-MM-dd'), ', ');
+        error(['STEP22_DUPLICATE_DATES: unexpected duplicate event dates in ' ...
+            'sheet "%s" after excluding joint announcements: %s.'], ...
+            sheet, duplicateText);
     end
 
-    excludedJoint = ismember(source.event_date, jointAnnouncementDates);
-    baseSample = ~excludedJoint & ~isnat(source.event_date);
+    baseSample = ~isnat(source.event_date);
 
     [shock, fit] = Build_JK_shock_components(source.ois, ...
         source.stoxx50, baseSample, primaryRotationQuantile);
@@ -87,8 +99,8 @@ for k = 1:numel(windowCodes)
 
     W = table();
     W.event_date = source.event_date;
-    W.window = repmat(code, height(source), 1);
-    W.source_sheet = repmat(sheet, height(source), 1);
+    W.window = repmat(code, nSource, 1);
+    W.source_sheet = repmat(sheet, nSource, 1);
     W.OIS_1M = source.ois(:, 1);
     W.OIS_3M = source.ois(:, 2);
     W.OIS_6M = source.ois(:, 3);
@@ -110,18 +122,20 @@ for k = 1:numel(windowCodes)
     W.CBI_median_10bp = shock.CBI_rotation / 0.10;
     W.pca_sample = shock.pca_sample;
     W.estimation_sample = shock.shock_sample;
-    W.excluded_joint_announcement = excludedJoint;
+    W.excluded_joint_announcement = false(nSource, 1);
     W.in_project_sample = ismember(source.event_date, projectDates);
     W.primary_phase_definition = repmat(ismember(code, ["PR", "PC"]), ...
-        height(source), 1);
-    W.aggregate_benchmark = repmat(code == "ME", height(source), 1);
+        nSource, 1);
+    W.aggregate_benchmark = repmat(code == "ME", nSource, 1);
     components = [components; W]; %#ok<AGROW>
 
     valid = shock.shock_sample;
     U = [shock.MP_rotation(valid), shock.CBI_rotation(valid)];
     M = [shock.policy_indicator(valid), source.stoxx50(valid)];
 
-    audit = append_audit(audit, code, "n_source_rows", height(source));
+    audit = append_audit(audit, code, "n_source_rows", nSource);
+    audit = append_audit(audit, code, ...
+        "n_joint_announcement_rows_excluded", nExcludedJoint);
     audit = append_audit(audit, code, "n_pca_rows", fit.n_pca);
     audit = append_audit(audit, code, "n_shock_rows", fit.n_shocks);
     audit = append_audit(audit, code, "n_project_shock_rows", ...
@@ -518,7 +532,11 @@ function manifest = build_step22_manifest(inputFile, primaryQ, grid, sheets)
         "builder_sha256";
         "rotation_sha256"];
 
-    here = fileparts(mfilename('fullpath'));
+    scriptFile = which('Shock_component_construction');
+    if strlength(string(scriptFile)) == 0 || exist(scriptFile, 'file') ~= 2
+        error('STEP22_SCRIPT_PATH: unable to resolve Shock_component_construction.m.');
+    end
+    here = fileparts(scriptFile);
     values = [
         "step22_v1";
         string(datetime('now', 'TimeZone', 'UTC'), 'yyyy-MM-dd''T''HH:mm:ssXXX');
@@ -540,7 +558,7 @@ function manifest = build_step22_manifest(inputFile, primaryQ, grid, sheets)
         "7c6ab69adae1439a6463f8e36480edfc20ae5f14";
         "3d46be255c74c822df31a420cd3341a8a154777b";
         current_git_commit(here);
-        sha256_file(mfilename('fullpath'));
+        sha256_file(scriptFile);
         sha256_file(fullfile(here, 'Build_JK_shock_components.m'));
         sha256_file(fullfile(here, 'JK_median_rotation.m'))];
 

@@ -1,5 +1,5 @@
 function Window_semantics_self_test()
-%WINDOW_SEMANTICS_SELF_TEST Deterministic tests for both timestamp conventions.
+%WINDOW_SEMANTICS_SELF_TEST Deterministic provenance and bar-label tests.
 
     rng(22027, 'twister');
     t0 = datetime(2023, 9, 14, 6, 0, 0);
@@ -19,11 +19,20 @@ function Window_semantics_self_test()
     [~, startSummary] = Audit_bar_label_convention(one, fiveStart, 1e-12);
     [~, endSummary] = Audit_bar_label_convention(one, fiveEnd, 1e-12);
 
+    archive = fiveStart;
+    premier = fiveStart;
+    archive.wall_time = archive.time_utc;
+    premier.wall_time = premier.time_utc;
+    timeSummary = Audit_timezone_provenance(archive, premier, 1e-12);
+
     assert(all(startSummary.decision == "interval_start"), ...
         'Start-label synthetic data were not identified.');
     assert(all(endSummary.decision == "interval_end"), ...
         'End-label synthetic data were not identified.');
-    fprintf('Window_semantics_self_test: interval-start and interval-end checks passed.\n');
+    assert(all(timeSummary.overall_pass), ...
+        'Identical archived and Premier exports did not pass provenance audit.');
+    fprintf(['Window_semantics_self_test: provenance, interval-start and ' ...
+        'interval-end checks passed.\n']);
 end
 
 function five = aggregate_five(one, convention)
