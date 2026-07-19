@@ -32,6 +32,9 @@ if ismember(mode, ["build", "all"])
 
     Component_sufficiency_self_test();
     Component_sufficiency_analysis();
+
+    Phase_component_contrast_self_test();
+    Phase_component_contrasts();
 end
 
 fprintf('Phase extension end %s | mode=%s\n', string(datetime('now')), mode);
