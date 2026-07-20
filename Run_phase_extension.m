@@ -13,11 +13,13 @@ end
 fprintf('Phase extension start %s | mode=%s\n', string(datetime('now')), mode);
 
 if ismember(mode, ["certify", "all"])
+    fprintf('\n[certification] Window_semantics_certification\n');
     Window_semantics_self_test();
     Window_semantics_certification;
 end
 
 if ismember(mode, ["build", "all"])
+    fprintf('\n[22/25] Phase windows, shock components and counterfactuals\n');
     Phase_window_self_test();
     Shock_component_self_test();
     Phase_window_construction;
@@ -30,12 +32,15 @@ if ismember(mode, ["build", "all"])
     end
     setenv('ANNOUNCEMENT_PHASE', previousPhase);
 
+    fprintf('\n[23/25] Component_sufficiency_analysis\n');
     Component_sufficiency_self_test();
     Component_sufficiency_analysis();
 
+    fprintf('\n[24/25] Phase_component_contrasts\n');
     Phase_component_contrast_self_test();
     Phase_component_contrasts();
 
+    fprintf('\n[25/25] Invariant_phase_attribution\n');
     Invariant_phase_attribution_self_test();
     Invariant_phase_attribution();
 end
