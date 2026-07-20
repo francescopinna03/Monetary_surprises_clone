@@ -104,6 +104,15 @@ before receiving a component interpretation. ME remains descriptive. Run
 `./Run_phase_component_contrasts.sh /path/to/Econometrics_data`; the protocol
 is in `STEP24_PHASE_COMPONENT_CONTRASTS.md`.
 
+Step 25 attributes an established PR-PC phase gap without selecting a JK
+rotation. It eigendecomposes the pooled-covariance-standardised difference of
+the policy/equity quadratic response matrices, bootstraps its dominant
+direction by event, and classifies only its MP-like or CBI-like sign sector.
+Median-JK, poor-man and residual short-curve blocks remain falsification
+exercises. Run
+`./Run_invariant_phase_attribution.sh /path/to/Econometrics_data`; the protocol
+is in `STEP25_INVARIANT_PHASE_ATTRIBUTION.md`.
+
 ## Notes on reproducibility
 
 The code is written in MATLAB and uses standard table, datetime and matrix operations. 
