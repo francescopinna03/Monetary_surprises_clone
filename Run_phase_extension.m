@@ -35,6 +35,9 @@ if ismember(mode, ["build", "all"])
 
     Phase_component_contrast_self_test();
     Phase_component_contrasts();
+
+    Invariant_phase_attribution_self_test();
+    Invariant_phase_attribution();
 end
 
 fprintf('Phase extension end %s | mode=%s\n', string(datetime('now')), mode);
