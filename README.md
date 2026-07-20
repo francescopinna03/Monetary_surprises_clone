@@ -136,7 +136,7 @@ The raw input files are provided separately together with the paper draft, as a 
 
 ## Repository structure
 
-The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `Run_pipeline.m` executes all twenty-one steps in order and writes a full console log to `pipeline_run.log`.
+The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `Run_pipeline.m` executes all twenty-five steps in order and writes a full console log to `pipeline_run.log`.
 
 A full replication therefore reduces to one command. From MATLAB:
 
@@ -243,7 +243,7 @@ event bootstrap, matched-placebo distribution and leave-one-event-out spectrum.
 
 The protocol and binding decision rule are recorded in `STEP21_PROTOCOL.md`. The negative eigenvalue must have a bootstrap upper endpoint below zero both in the full sample and after excluding 2020; retention and usable-bootstrap gates must also pass. The positive eigenvalue and the relative Bund-equity rotation are secondary and cannot rescue a failed decision.
 
-Step 21 writes separate directories so a smoke test cannot overwrite the final results. `./Run_risk_resolution.sh /path/to/Econometrics_data smoke 49` writes to `Output/analysis/step21_smoke`. `./Run_risk_resolution.sh /path/to/Econometrics_data final 999` writes to `Output/analysis/step21_final`. `Run_decisive_test.sh` reruns Steps 20 and 21 only. A complete `Run_pipeline.sh /path/to/Econometrics_data` replication executes all 21 steps and defaults to the final 999-draw specification.
+Step 21 writes separate directories so a smoke test cannot overwrite the final results. `./Run_risk_resolution.sh /path/to/Econometrics_data smoke 49` writes to `Output/analysis/step21_smoke`. `./Run_risk_resolution.sh /path/to/Econometrics_data final 999` writes to `Output/analysis/step21_final`. `Run_decisive_test.sh` reruns Steps 20 and 21 only. A complete `Run_pipeline.sh /path/to/Econometrics_data` replication executes all 25 steps and defaults to the final 999-draw specification.
 
 The distinction between `Clean_raw_files.m` and `clean_single_barchart_file.m` is important. The former is the script that should be executed by the user. The latter is a single-file cleaning function. In a full run, the driver calls the helper once for each raw Barchart CSV file. The shared helper `Get_project_root.m` must also be available on the MATLAB path or in the same folder as the scripts, which is automatic when the repository is used as the working directory.
 
