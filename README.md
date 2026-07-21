@@ -113,6 +113,16 @@ exercises. Run
 `./Run_invariant_phase_attribution.sh /path/to/Econometrics_data`; the protocol
 is in `STEP25_INVARIANT_PHASE_ATTRIBUTION.md`.
 
+Step 26 reconstructs the official ABGMR `Target` factor in PR and `Timing`,
+`Forward Guidance` and `QE` factors in PC from the 1M--10Y curve. It tests only
+their information incremental to the Step-25 policy/equity plane and asks
+whether that block materially attenuates the paired PR-PC response gap. A
+named attribution must pass wild-cluster, grouped-OOS, leave-top-k and
+generated-factor LOO checks. These curve factors do not by themselves convert
+the MP-like set attribution into an exact structural MP/CBI label. Run
+`./Run_long_horizon_attribution.sh /path/to/Econometrics_data`; the protocol is
+in `STEP26_LONG_HORIZON_ATTRIBUTION.md`.
+
 ## Notes on reproducibility
 
 The code is written in MATLAB and uses standard table, datetime and matrix operations. 
@@ -136,7 +146,7 @@ The raw input files are provided separately together with the paper draft, as a 
 
 ## Repository structure
 
-The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `Run_pipeline.m` executes all twenty-one steps in order and writes a full console log to `pipeline_run.log`.
+The repository is organized as a flat MATLAB codebase. The files are intended to be run sequentially, with some later files serving as robustness checks or extensions rather than mandatory baseline steps. The master script `Run_pipeline.m` executes all twenty-six steps in order and writes a full console log to `pipeline_run.log`.
 
 A full replication therefore reduces to one command. From MATLAB:
 
@@ -243,7 +253,7 @@ event bootstrap, matched-placebo distribution and leave-one-event-out spectrum.
 
 The protocol and binding decision rule are recorded in `STEP21_PROTOCOL.md`. The negative eigenvalue must have a bootstrap upper endpoint below zero both in the full sample and after excluding 2020; retention and usable-bootstrap gates must also pass. The positive eigenvalue and the relative Bund-equity rotation are secondary and cannot rescue a failed decision.
 
-Step 21 writes separate directories so a smoke test cannot overwrite the final results. `./Run_risk_resolution.sh /path/to/Econometrics_data smoke 49` writes to `Output/analysis/step21_smoke`. `./Run_risk_resolution.sh /path/to/Econometrics_data final 999` writes to `Output/analysis/step21_final`. `Run_decisive_test.sh` reruns Steps 20 and 21 only. A complete `Run_pipeline.sh /path/to/Econometrics_data` replication executes all 21 steps and defaults to the final 999-draw specification.
+Step 21 writes separate directories so a smoke test cannot overwrite the final results. `./Run_risk_resolution.sh /path/to/Econometrics_data smoke 49` writes to `Output/analysis/step21_smoke`. `./Run_risk_resolution.sh /path/to/Econometrics_data final 999` writes to `Output/analysis/step21_final`. `Run_decisive_test.sh` reruns Steps 20 and 21 only. A complete `Run_pipeline.sh /path/to/Econometrics_data` replication executes all 26 steps and locks every stochastic decision stage through Step 26 to the final 999-draw specification.
 
 The distinction between `Clean_raw_files.m` and `clean_single_barchart_file.m` is important. The former is the script that should be executed by the user. The latter is a single-file cleaning function. In a full run, the driver calls the helper once for each raw Barchart CSV file. The shared helper `Get_project_root.m` must also be available on the MATLAB path or in the same folder as the scripts, which is automatic when the repository is used as the working directory.
 

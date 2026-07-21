@@ -10,76 +10,84 @@ setenv('ANNOUNCEMENT_VALIDATION_DRAWS', '999');
 setenv('ANNOUNCEMENT_ROTATION_DRAWS', '999');
 setenv('ANNOUNCEMENT_RESOLUTION_MODE', 'final');
 setenv('ANNOUNCEMENT_RESOLUTION_DRAWS', '999');
-fprintf('Locked inference draws: Steps 19--21 = 999; Step 21 mode = final\n');
+setenv('COMPONENT_SUFFICIENCY_DRAWS', '999');
+setenv('PHASE_COMPONENT_CONTRAST_DRAWS', '999');
+setenv('INVARIANT_ATTRIBUTION_DRAWS', '999');
+setenv('LONG_HORIZON_ATTRIBUTION_DRAWS', '999');
+fprintf(['Locked inference draws: Steps 19--26 = 999; ' ...
+    'Step 21 mode = final\n']);
 
 fprintf('\n[preflight] Time_alignment_self_test\n');
 Time_alignment_self_test();
 
-fprintf('\n[ 1/21] Audit_Barchart\n');
+fprintf('\n[ 1/26] Audit_Barchart\n');
 Audit_Barchart;
 
-fprintf('\n[ 2/21] Clean_raw_files\n');
+fprintf('\n[ 2/26] Clean_raw_files\n');
 Clean_raw_files;
 
-fprintf('\n[ 3/21] Contract_event_day\n');
+fprintf('\n[ 3/26] Contract_event_day\n');
 Contract_event_day;
 
-fprintf('\n[ 4/21] Event_panel_construction\n');
+fprintf('\n[ 4/26] Event_panel_construction\n');
 Event_panel_construction;
 
 fprintf('\n[audit] Event_time_alignment_audit\n');
 Event_time_alignment_audit;
 
-fprintf('\n[ 5/21] Event_windows\n');
+fprintf('\n[ 5/26] Event_windows\n');
 Event_windows;
 
-fprintf('\n[ 6/21] Press_release_panel\n');
+fprintf('\n[ 6/26] Press_release_panel\n');
 Press_release_panel;
 
-fprintf('\n[ 7/21] Regression_fractional\n');
+fprintf('\n[ 7/26] Regression_fractional\n');
 Regression_fractional;
 
-fprintf('\n[ 8/21] PR_signal_model\n');
+fprintf('\n[ 8/26] PR_signal_model\n');
 PR_signal_model;
 
-fprintf('\n[ 9/21] State_vector_panel\n');
+fprintf('\n[ 9/26] State_vector_panel\n');
 State_vector_panel;
 
-fprintf('\n[10/21] State_dependent_models\n');
+fprintf('\n[10/26] State_dependent_models\n');
 State_dependent_models;
 
-fprintf('\n[11/21] Shock_purification_models\n');
+fprintf('\n[11/26] Shock_purification_models\n');
 Shock_purification_models;
 
-fprintf('\n[12/21] Functional_state_models\n');
+fprintf('\n[12/26] Functional_state_models\n');
 Functional_state_models;
 
-fprintf('\n[13/21] Volatility_components\n');
+fprintf('\n[13/26] Volatility_components\n');
 Volatility_components;
 
-fprintf('\n[14/21] Hierarchical_shrinkage\n');
+fprintf('\n[14/26] Hierarchical_shrinkage\n');
 Hierarchical_shrinkage;
 
-fprintf('\n[15/21] PR_bar_panel\n');
+fprintf('\n[15/26] PR_bar_panel\n');
 PR_bar_panel;
 
-fprintf('\n[16/21] BNS_volatility\n');
+fprintf('\n[16/26] BNS_volatility\n');
 BNS_volatility;
 
-fprintf('\n[17/21] Quasi_markov_residual_predictability\n');
+fprintf('\n[17/26] Quasi_markov_residual_predictability\n');
 Quasi_markov_residual_predictability;
 
-fprintf('\n[18/21] Announcement_counterfactual\n');
+fprintf('\n[18/26] Announcement_counterfactual\n');
 Announcement_counterfactual;
 
-fprintf('\n[19/21] Announcement_counterfactual_validation\n');
+fprintf('\n[19/26] Announcement_counterfactual_validation\n');
 Announcement_counterfactual_validation;
 
-fprintf('\n[20/21] Announcement_risk_rotation\n');
+fprintf('\n[20/26] Announcement_risk_rotation\n');
 Announcement_risk_rotation;
 
-fprintf('\n[21/21] Announcement_risk_resolution\n');
+fprintf('\n[21/26] Announcement_risk_resolution\n');
 Announcement_risk_resolution;
+
+setenv('PHASE_EXTENSION_MODE', 'all');
+Run_phase_extension;
 
 fprintf('\nPipeline end %s\n', string(datetime('now')));
 
